@@ -1,1 +1,19 @@
-.TaskCard {}
+.TaskCard {
+    background-color: rgb(238, 238, 238);
+    margin-bottom   : 20px;
+
+    .MuiCardContent-root {
+        padding: 16px !important;
+    }
+
+    .TaskCard-content {
+        display        : flex;
+        flex-flow      : row nowrap;
+        justify-content: space-between;
+
+        .TaskCard-icons {
+            display  : flex;
+            flex-flow: row nowrap;
+        }
+    }
+}
