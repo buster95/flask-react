@@ -39,6 +39,8 @@ const Task: React.FC<TaskProps> = (props) => {
     } else {
       TaskService.getAll().then(tasks => {
         setTasks(tasks);
+        setSelectedTasks([]);
+        onSelectionChange([]);
       }).catch(error => {
         console.error(error)
       });
@@ -109,7 +111,6 @@ const Task: React.FC<TaskProps> = (props) => {
         return tasks;
       });
     }
-    // onSelectionChange(tasks);
     onSelectionChange(selectedTasks);
   }
 
