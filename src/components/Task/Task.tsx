@@ -10,13 +10,15 @@ import Typography from '@material-ui/core/Typography';
 
 interface TaskProps {
   lastTask?: TaskType;
+  onSelectionChange: (tasks: TaskType[]) => void;
 }
 
 const Task: React.FC<TaskProps> = (props) => {
-  const { lastTask } = props;
+  const { lastTask, onSelectionChange } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [openCompletedDialog, setOpenCompletedDialog] = useState(false);
   const [tasks, setTasks] = useState<TaskType[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<TaskType[]>([]);
   const [task, setTask] = useState<TaskType | null>(null);
 
   useEffect(() => {
@@ -28,7 +30,19 @@ const Task: React.FC<TaskProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (lastTask) setTasks([...tasks, lastTask]);
+    console.log(lastTask);
+    if (lastTask !== undefined) {
+      setTasks(tasks => {
+        tasks.push(lastTask);
+        return tasks;
+      });
+    } else {
+      TaskService.getAll().then(tasks => {
+        setTasks(tasks);
+      }).catch(error => {
+        console.error(error)
+      });
+    }
   }, [lastTask]);
 
   function handleOnCloseUpdateDialog(task?: TaskType) {
@@ -83,6 +97,22 @@ const Task: React.FC<TaskProps> = (props) => {
     }
   }
 
+  function handleOnSelected(task: TaskType, selected: boolean) {
+    if (selected) {
+      setSelectedTasks(tasks => {
+        tasks.push(task);
+        return tasks;
+      });
+    } else {
+      setSelectedTasks(tasks => {
+        tasks.splice(tasks.indexOf(task), 1);
+        return tasks;
+      });
+    }
+    // onSelectionChange(tasks);
+    onSelectionChange(selectedTasks);
+  }
+
   return (
     <div className="Task">
       <Typography variant="h5" style={{ marginBottom: 20 }}>Task List</Typography>
@@ -90,7 +120,7 @@ const Task: React.FC<TaskProps> = (props) => {
       <TaskCompletedDialog open={openCompletedDialog} task={task || { id: 0, task: '', description: '', iscompleted: false }} onClose={handleOnCloseCompletedDialog} />
 
       {tasks.map((task: TaskType, index: number) => (
-        <TaskCard key={index} task={task} action={handleCardAction} />
+        <TaskCard key={index} task={task} action={handleCardAction} onSelected={handleOnSelected} />
       ))}
     </div>
   );

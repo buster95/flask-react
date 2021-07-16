@@ -15,10 +15,11 @@ import { TaskType } from '../../types/task.type';
 interface TaskCardProps {
   task: TaskType;
   action: (action: 'update' | 'finish', task: TaskType) => void;
+  onSelected: (task: TaskType, selected: boolean) => void;
 }
 
 const TaskCard: React.FC<TaskCardProps> = (props) => {
-  const { task, action } = props;
+  const { task, action, onSelected } = props;
 
   return (
     <Card className="TaskCard" elevation={2}>
@@ -26,7 +27,7 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
         <div className="TaskCard-content">
           <div>
             {!task.iscompleted &&
-              <Checkbox />
+              <Checkbox onChange={(evt) => onSelected(task, evt.target.checked)} />
             }
           </div>
 
