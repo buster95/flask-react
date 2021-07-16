@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Task.scss';
 import TaskCard from '../TaskCard/TaskCard';
 import TaskDialog from '../TaskDialog/TaskDialog';
-import TaskCompletedDialog from '../TaskCompletedDialog/TaskCompletedDialog';
+import TaskCompletedDialog from '../../helpers/TaskCompletedDialog/TaskCompletedDialog';
 import { TaskType } from '../../types/task.type';
 import { TaskService } from '../../services/task.service';
 
