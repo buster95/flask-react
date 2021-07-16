@@ -15,12 +15,13 @@ import { TaskService } from '../services/task.service';
 
 const App: React.FC = () => {
   const [openAdd, setOpenAdd] = useState(false);
+  const [lastTask, setLastTask] = useState<TaskType>();
 
   const handleOnAdd = async (task?: TaskType) => {
     if (task !== undefined) {
       if (task.id < 0) {
         const newTask = (await TaskService.save(task)).data;
-        console.log(newTask)
+        setLastTask(newTask);
       }
     }
     setOpenAdd(false);
@@ -45,7 +46,7 @@ const App: React.FC = () => {
       </AppBar>
 
       <div className="container">
-        <Task />
+        <Task lastTask={lastTask} />
 
         <TaskDialog open={openAdd} onClose={handleOnAdd} task={null} />
       </div>

@@ -8,7 +8,12 @@ import { TaskService } from '../../services/task.service';
 
 import Typography from '@material-ui/core/Typography';
 
-const Task: React.FC = () => {
+interface TaskProps {
+  lastTask?: TaskType;
+}
+
+const Task: React.FC<TaskProps> = (props) => {
+  const { lastTask } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [openCompletedDialog, setOpenCompletedDialog] = useState(false);
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -21,6 +26,10 @@ const Task: React.FC = () => {
       console.error(error)
     });
   }, []);
+
+  useEffect(() => {
+    if (lastTask) setTasks([...tasks, lastTask]);
+  }, [lastTask]);
 
   function handleOnCloseUpdateDialog(task?: TaskType) {
     if (task === undefined) {
