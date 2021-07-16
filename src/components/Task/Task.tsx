@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './Task.scss';
+import TaskCard from '../TaskCard/TaskCard';
+import TaskDialog from '../TaskDialog/TaskDialog';
+import TaskCompletedDialog from '../TaskCompletedDialog/TaskCompletedDialog';
+import { TaskType } from '../../types/task.type';
+import { TaskService } from '../../services/task.service';
 
 import Typography from '@material-ui/core/Typography';
-import TaskCard from '../TaskCard/TaskCard';
-import { TaskType } from '../../types/task.type';
-import TaskDialog from '../TaskDialog/TaskDialog';
-import { TaskService } from '../../services/task.service';
 
 const Task: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [openCompletedDialog, setOpenCompletedDialog] = useState(false);
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [task, setTask] = useState<TaskType | null>(null);
 
@@ -20,7 +22,7 @@ const Task: React.FC = () => {
     });
   }, []);
 
-  const handleOnClose = (task?: TaskType) => {
+  function handleOnCloseUpdateDialog(task?: TaskType) {
     if (task === undefined) {
       setOpenDialog(false);
       return;
@@ -38,7 +40,24 @@ const Task: React.FC = () => {
     });
   }
 
-  const handleCardAction = (action: 'update' | 'finish', returnedTask: TaskType) => {
+  function handleOnCloseCompletedDialog(isCompleted: boolean) {
+    setOpenCompletedDialog(false);
+    if (task !== null && isCompleted) {
+      TaskService.complete(task, isCompleted).then(() => {
+        setTasks(tasks.map(item => {
+          if (item.id === task.id) {
+            item.iscompleted = isCompleted;
+            return item;
+          }
+          return item;
+        }));
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+  }
+
+  function handleCardAction(action: 'update' | 'finish', returnedTask: TaskType) {
     switch (action) {
       case 'update':
         setTask(returnedTask);
@@ -47,6 +66,7 @@ const Task: React.FC = () => {
 
       case 'finish':
         setTask(returnedTask);
+        setOpenCompletedDialog(true);
         break;
 
       default:
@@ -57,7 +77,8 @@ const Task: React.FC = () => {
   return (
     <div className="Task">
       <Typography variant="h5" style={{ marginBottom: 20 }}>Task List</Typography>
-      <TaskDialog open={openDialog} task={task} onClose={handleOnClose} />
+      <TaskDialog open={openDialog} task={task} onClose={handleOnCloseUpdateDialog} />
+      <TaskCompletedDialog open={openCompletedDialog} task={task || { id: 0, task: '', description: '', iscompleted: false }} onClose={handleOnCloseCompletedDialog} />
 
       {tasks.map((task: TaskType, index: number) => (
         <TaskCard key={index} task={task} action={handleCardAction} />

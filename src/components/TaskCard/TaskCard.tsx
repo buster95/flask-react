@@ -25,7 +25,9 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
       <CardContent style={{ borderBottom: `8px solid ${task.iscompleted ? 'rgb(96,206,118	)' : 'red'}` }}>
         <div className="TaskCard-content">
           <div>
-            <Checkbox></Checkbox>
+            {!task.iscompleted &&
+              <Checkbox />
+            }
           </div>
 
           <div style={{ flexGrow: 1, marginLeft: 20 }}>
@@ -34,17 +36,21 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
           </div>
 
           <div className="TaskCard-icons">
-            <Tooltip title="Update task" placement="bottom">
-              <IconButton onClick={() => action('update', task)}>
-                <UpdateIcon />
-              </IconButton>
-            </Tooltip>
+            {!task.iscompleted &&
+              <Tooltip title="Update task" placement="bottom">
+                <IconButton onClick={() => action('update', task)}>
+                  <UpdateIcon />
+                </IconButton>
+              </Tooltip>
+            }
 
-            <Tooltip title="Finish task" placement="bottom">
-              <IconButton onClick={() => action('finish', task)}>
-                <FinishIcon />
-              </IconButton>
-            </Tooltip>
+            {!task.iscompleted &&
+              <Tooltip title="Finish task" placement="bottom">
+                <IconButton onClick={() => action('finish', task)}>
+                  <FinishIcon />
+                </IconButton>
+              </Tooltip>
+            }
           </div>
         </div>
       </CardContent>

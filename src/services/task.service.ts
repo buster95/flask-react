@@ -25,4 +25,8 @@ export const TaskService = {
         const response = await http.put<TaskType>(`/task/${taskId}`, body);
         return response;
     },
+    async complete(task: TaskType, iscompleted: boolean) {
+        const response = await this.update(task.id, { ...task, iscompleted });
+        return response;
+    }
 }
