@@ -10,6 +10,8 @@ flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 flask-restful = "*"
 flask-cors = "*"
+graphene = "*"
+flask-graphql = "*"
 
 [dev-packages]
 autopep8 = "*"
